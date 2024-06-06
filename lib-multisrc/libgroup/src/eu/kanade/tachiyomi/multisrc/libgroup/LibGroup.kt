@@ -309,7 +309,10 @@ abstract class LibGroup(
         }
 
         val sortingList = preferences.getString(SORTING_PREF, "ms_mixing")
-        val defaultBranchId = runCatching { getDefaultBranch(slugUrl.substringBefore("-")).first().id }.getOrNull()
+        var defaultBranchId: Int? = null 
+        if (chaptersData.data.filter { it.branchesCount > 1 }.isNullOrEmpty()) { //excess request if branches Count is only alone
+            defaultBranchId = runCatching { getDefaultBranch(slugUrl.substringBefore("-")).first().id }.getOrNull()
+        }
 
         val chapters = mutableListOf<SChapter>()
         for (it in chaptersData.data.withIndex()) {
